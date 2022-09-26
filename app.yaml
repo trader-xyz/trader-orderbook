@@ -1,0 +1,10 @@
+runtime: nodejs
+env: flex
+
+network:
+  name: default # redis network name
+  session_affinity: true # websocket https://cloud.google.com/appengine/docs/flexible/nodejs/using-websockets-and-session-affinity
+
+# While testing...
+manual_scaling:
+  instances: 1

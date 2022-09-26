@@ -1,0 +1,7 @@
+https://www.prisma.io/docs/guides/database/using-prisma-with-planetscale#how-to-add-in-missing-relations-after-introspection
+
+Add this to the order: 
+  order_status         order_status_v4_nfts[]
+
+Add this to the order_status:
+  order             orders_v4_nfts @relation(fields: [nonce], references: [nonce])

@@ -1,0 +1,7 @@
+web: yarn dev:api
+svc-pub-block: yarn dev:service:producer:block-number
+svc-pub-fix-gaps-cron: yarn dev:service:producer:fix-block-gaps-by-job
+svc-con-exch-events: yarn dev:service:consumer:exchange-events-by-block-number
+svc-con-block-events: yarn dev:service:consumer:save-block-to-db
+svc-con-nft-metadata: yarn dev:service:consumer:nft-metadata
+svc-cron-os-collections: yarn dev:service:cron:os-collections-sync

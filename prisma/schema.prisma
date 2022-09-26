@@ -1,0 +1,235 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model orders_v4_nfts {
+  id                   String    @id @unique(map: "id") @db.Text
+  maker                String    @db.Text
+  taker                String    @default("0x0000000000000000000000000000000000000000") @db.Text
+  expiry               String    @db.Text
+  expiry_datetime      DateTime
+  nonce                String    @unique @db.Text
+  erc20_token          String    @db.Text
+  erc20_token_amount   String    @db.Text
+  fees                 Json?
+  nft_token            String    @db.Text
+  nft_token_id         String    @db.Text
+  nft_token_amount     String    @db.Text
+  nft_token_properties Json?
+  system_metadata      Json?
+  app_metadata         Json?
+  chain_id             String    @db.Text
+  verifying_contract   String    @db.Text
+  direction            String    @db.Text
+  signature            Json
+  nft_type             String    @db.Text
+  app_id               String?   @db.Text
+  date_created         DateTime? @default(now())
+  date_last_updated    DateTime? @default(now())
+
+  order_valid           Boolean?
+  date_last_validated   DateTime?
+
+  @@unique([chain_id, nonce, erc20_token, erc20_token_amount, nft_token, nft_token_amount], map: "uniq_order_index")
+}
+
+model order_status_v4_nfts {
+  id                 String    @id @default(dbgenerated("gen_random_uuid()")) @db.Text
+  block_number       BigInt?
+  date_posted_to_db  DateTime? @default(now())
+  order_status       String    @db.Text
+  nonce              String    @db.Text
+  block_hash         String?   @db.Text
+  address            String?   @db.Text
+  data               String?   @db.Text
+  transaction_hash   String?   @db.Text
+  signature          String?   @db.Text
+  topic              String?   @db.Text
+  name               String?   @db.Text
+  parsed_args        Json?
+  chain_id           String    @db.Text
+  verifying_contract String    @db.Text
+
+  @@unique([block_hash, order_status, chain_id, nonce], map: "comp")
+  @@index([block_number], map: "order_status_block_num_idx")
+  @@index([nonce], map: "order_status_v4_nfts_nonce_index")
+  @@index([transaction_hash], map: "order_status_v4_nfts_tx_hash")
+}
+
+model job_records {
+  id                 String    @id @default(dbgenerated("gen_random_uuid()")) @db.Text
+  job_name           String    @db.Text
+  chain_id           String    @db.Text
+  block_number       BigInt
+  hash               String?   @db.Text
+  parent_hash        String?   @db.Text
+  job_data           Json?
+  date_processed     DateTime? @default(now())
+  verifying_contract String    @db.Text
+
+  @@unique([job_name, chain_id, block_number, hash, parent_hash], map: "job_record_idx")
+}
+
+model blocks {
+  id                    String    @id @default(dbgenerated("gen_random_uuid()")) @db.Text
+  number                BigInt
+  hash                  String    @db.Text
+  parent_hash           String    @db.Text
+  nonce                 String    @db.Text
+  timestamp             BigInt
+  date_mined            DateTime
+  chain_id              String    @db.Text
+  date_processed_by_api DateTime? @default(now())
+
+  @@unique([chain_id, number, hash, parent_hash, nonce], map: "unique_block_idx")
+}
+
+model nft_metadata {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Text
+
+  token_id              String
+  token_address         String
+  chain_id              String
+  token_uri             String
+  metadata              Json?
+  token_url             String?
+  token_url_mime_type   String?
+  name                  String?
+  description           String?
+  content_url           String?
+  content_url_mime_type String?
+  image_url             String?
+  external_link         String?
+  attributes            Json?
+  date_updated          DateTime? @default(now())
+}
+
+
+model opensea_collection_metadata_by_contract_address_v1 {
+  address String @id
+
+  collection Json
+
+  asset_contract_type String?
+  created_date String?
+  name String?
+  nft_version String?
+  opensea_version String?
+  owner String?
+  schema_name String?
+  symbol String?
+  total_supply String?
+  description String?
+  external_link String?
+  image_url String?
+  default_to_fiat Boolean?
+  dev_buyer_fee_basis_points String?
+  dev_seller_fee_basis_points String?
+  only_proxied_transfers Boolean?
+  opensea_buyer_fee_basis_points String?
+  opensea_seller_fee_basis_points String?
+  buyer_fee_basis_points String?
+  seller_fee_basis_points String?
+  payout_address String?
+
+  date_scrape_updated          DateTime? @default(now())
+}
+
+model opensea_collection_metadata_by_slug_v1 {
+  slug String @id
+
+  name          String?
+  external_link String?
+  description   String?
+  image_url     String?
+
+  primary_asset_contracts Json?
+  editors                     Json?
+  traits                      Json?
+  stats                       Json?
+  banner_image_url            String?
+  chat_url                    String?
+  created_date                DateTime?
+  dev_buyer_fee_basis_points  String?
+  dev_seller_fee_basis_points String?
+  discord_url                 String?
+  display_data                Json?
+  external_url                String?
+  featured                    Boolean?
+  featured_image_url          String?
+  hidden                      Boolean?
+  safelist_request_status     String?
+  is_subject_to_whitelist     Boolean?
+
+  large_image_url                 String?
+  medium_username                 String?
+  only_proxied_transfers          Boolean?
+  opensea_buyer_fee_basis_points  String?
+  payout_address                  String?
+  opensea_seller_fee_basis_points String?
+  require_email                   Boolean?
+  short_description               String?
+  telegram_url                    String?
+  twitter_username                String?
+  instagram_username              String?
+  wiki_url                        String?
+  is_nsfw                         Boolean?
+
+  date_updated DateTime? @default(now())
+}
+
+// model covalent_nft_history_by_contract_v1 {
+//     chain_id String
+//   collection_name String
+//   collection_address String
+//   collection_ticker_symbol String
+//   opening_date String
+//   volume_wei_day String
+//   volume_quote_day number
+//   average_volume_wei_day String
+//   average_volume_quote_day number
+//   unique_token_ids_sold_count_day number
+//   floor_price_wei_7d String
+//   floor_price_quote_7d number
+//   gas_quote_rate_day number
+//   quote_currency String
+// }
+
+// This should always be in sync with orders_v4_nfts + a few columns from order_status_v4_nfts
+model orders_with_latest_status {
+  // order properties
+  maker                String
+  taker                String
+  expiry               String
+  expiry_datetime      DateTime
+  nonce                String    @unique
+  erc20_token          String
+  erc20_token_amount   String
+  fees                 Json?
+  nft_token            String
+  nft_token_id         String
+  nft_token_amount     String
+  nft_token_properties Json?
+  system_metadata      Json?
+  app_metadata         Json?
+  chain_id             String
+  verifying_contract   String
+  direction            String
+  signature            Json
+  nft_type             String
+  app_id               String?
+  date_created         DateTime?
+  date_last_updated    DateTime?
+  order_valid           Boolean?
+  date_last_validated   DateTime?
+  // left join order status properties
+  transaction_hash     String?
+  block_number         BigInt?
+  order_status         String?
+}
