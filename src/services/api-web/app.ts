@@ -97,6 +97,7 @@ const bootstrapApp = async () => {
   // Set up routes and middlewares
   // Basic Healthchecks
   app.get('/', (_, res) => res.sendStatus(200))
+  app.get('/v2', (_, res) => res.sendStatus(200))
   app.get('/healthcheck', (_, res) => res.sendStatus(200))
   app.get('/status', (_, res) => res.sendStatus(200))
 

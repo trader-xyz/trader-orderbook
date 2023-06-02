@@ -276,6 +276,11 @@ const createOrderbookRouter = () => {
         filterParamsAND.push({
           order_status: 'expired',
         })
+        filterParamsAND.push({
+          expiry_datetime: {
+            lte: new Date(),
+          },
+        })
       } else if (orderStatus === 'cancelled') {
         filterParamsAND.push({
           order_status: 'cancelled',
@@ -284,11 +289,21 @@ const createOrderbookRouter = () => {
         filterParamsAND.push({
           order_status: null,
         })
+        filterParamsAND.push({
+          expiry_datetime: {
+            gt: new Date(),
+          },
+        })
       }
     } else {
       // By default, only fetch open orders (unfilled, unexpired, uncancelled)
       filterParamsAND.push({
         order_status: null,
+      })
+      filterParamsAND.push({
+        expiry_datetime: {
+          gt: new Date(),
+        },
       })
     }
 
