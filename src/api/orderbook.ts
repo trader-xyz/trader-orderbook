@@ -14,6 +14,7 @@ import { modelDbOrderToSdkOrder, nftOrderToDbModel } from '../services/api-web/u
 import { GCP_PROJECT_ID, getJsonRpcUrlByChainId, getZeroExContract } from '../default-config'
 import { PUBSUB_TOPICS } from '../services/utils/pubsub'
 import { OrderStatusUpdateRequestEvent } from '../services/utils/messaging-types'
+import { getUnixTime } from 'date-fns'
 
 export enum TradeDirection {
   SellNFT = 0,
@@ -136,7 +137,7 @@ const createOrderbookRouter = () => {
       }
     }
     const nftTokenId = queryParams.nftTokenId ?? queryParams.erc721TokenId ?? queryParams.erc1155TokenId
-    if (nftTokenId) {
+    if (nftTokenId !== undefined) {
       if (Array.isArray(nftTokenId)) {
         filterParamsAND.push({
           nft_token_id: {
@@ -263,6 +264,9 @@ const createOrderbookRouter = () => {
         })
       }
     }
+
+    // Needs to be in iso string, the raw date doesn't seem to work (?) maybe user error
+    const nowPrismaDateTime = new Date().toISOString()
     const orderStatus =
       queryParams.status?.toString() ?? queryParams.order_status?.toString() ?? queryParams.orderStatus?.toString()
     if (orderStatus) {
@@ -273,12 +277,12 @@ const createOrderbookRouter = () => {
           order_status: 'filled',
         })
       } else if (orderStatus === 'expired') {
-        filterParamsAND.push({
-          order_status: 'expired',
-        })
+        // filterParamsAND.push({
+        //   order_status: 'expired',
+        // })
         filterParamsAND.push({
           expiry_datetime: {
-            lte: new Date(),
+            lte: nowPrismaDateTime,
           },
         })
       } else if (orderStatus === 'cancelled') {
@@ -291,7 +295,7 @@ const createOrderbookRouter = () => {
         })
         filterParamsAND.push({
           expiry_datetime: {
-            gt: new Date(),
+            gt: nowPrismaDateTime,
           },
         })
       }
@@ -302,7 +306,7 @@ const createOrderbookRouter = () => {
       })
       filterParamsAND.push({
         expiry_datetime: {
-          gt: new Date(),
+          gt: nowPrismaDateTime,
         },
       })
     }
@@ -312,9 +316,9 @@ const createOrderbookRouter = () => {
       //
     } else {
       // By default, only show valid orders
-      filterParamsAND.push({
-        order_valid: true,
-      })
+      // filterParamsAND.push({
+      //   order_valid: true,
+      // })
     }
 
     // Limit for query
