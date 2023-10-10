@@ -115,12 +115,8 @@ interface Web3JsBlockHeader {
 }
 
 const CHAINS: string[] = [
-  CHAIN_IDS.MAINNET,
-  CHAIN_IDS.POLYGON,
-  CHAIN_IDS.POLYGON_MUMBAI,
-  CHAIN_IDS.OPTIMISM,
-  CHAIN_IDS.ARBITRUM,
-  CHAIN_IDS.GOERLI,
+  CHAIN_IDS.GAUSS,
+  CHAIN_IDS.GIL,
 ]
 
 CHAINS.forEach((chain) => {

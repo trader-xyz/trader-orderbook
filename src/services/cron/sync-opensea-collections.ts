@@ -95,7 +95,7 @@ const doOpenSeaCollectionSync = async () => {
   return insertCount
 }
 
-const jobsToMonitorGaps = [[JOBS.OpenSeaRecentCollectionsSync, CHAIN_IDS.MAINNET]]
+const jobsToMonitorGaps = [[JOBS.OpenSeaRecentCollectionsSync]]
 
 const CRON_FREQUENCY_IN_MINUTES = 10
 const cronTasks = jobsToMonitorGaps.map(([jobName, chainId]) => {

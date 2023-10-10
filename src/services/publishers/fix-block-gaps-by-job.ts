@@ -50,7 +50,7 @@ const fetchBlockGapsByJobName = async (jobName: string, chainId: string, prisma:
   return gaps ?? []
 }
 
-const jobsToMonitorGaps = [[JOBS.OrderUpdateByBlock, CHAIN_IDS.ROPSTEN]]
+const jobsToMonitorGaps = [[JOBS.OrderUpdateByBlock]]
 
 const cronTasks = jobsToMonitorGaps.map(([jobName, chainId]) => {
   // ('*/30 * * * *') <-- cron for every 30 min

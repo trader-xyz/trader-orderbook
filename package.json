@@ -75,6 +75,7 @@
   },
   "scripts": {
     "build": "tsc",
+    "post-install": "rmdir /s /q .\\node_modules\\@traderxyz\\nft-swap-sdk && xcopy /e /i .\\forked-sdk\\@traderxyz\\nft-swap-sdk .\\node_modules\\@traderxyz\\nft-swap-sdk",
     "prettier": "prettier --write 'src/**/*.ts' --config .prettierrc",
     "lint": "tslint --project . --format stylish",
     "lint:fix": "tslint --project . --format stylish --fix",

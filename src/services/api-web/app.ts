@@ -28,7 +28,7 @@ const bootstrapApp = async () => {
 
   if (isProduction) {
     Sentry.init({
-      dsn: process.SENTRY_DSN,
+      dsn: process.env.SENTRY_DSN,
       integrations: [
         // enable HTTP calls tracing
         new Sentry.Integrations.Http({ tracing: true }),

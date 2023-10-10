@@ -6,6 +6,8 @@ import { StaticJsonRpcProvider } from '@ethersproject/providers'
 import { getJsonRpcUrlByChainId, DEFAULT_OPENSEA_API_KEY } from '../../default-config'
 import { ERC721__factory } from '../../contracts'
 
+const apiKey = process.env.OPENSEA_API_KEY || DEFAULT_OPENSEA_API_KEY;
+
 interface CanonicalNftWithMetadata {
   tokenId: string
   tokenAddress: string
@@ -137,7 +139,7 @@ const fetchNftMetadataFromOpenSea = async (contractAddress: string, tokenId: str
     `https://api.opensea.io/api/v1/asset/${contractAddress}/${tokenId}/?include_orders=false`,
     {
       headers: {
-        'X-API-KEY': DEFAULT_OPENSEA_API_KEY,
+        'X-API-KEY': apiKey,
         Accept: 'application/json',
       },
     }
